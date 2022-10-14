@@ -1,43 +1,103 @@
-# Machine-Coding-Round
+Pendency is a system that is able to track counts of in-flight/in-progress entities.
+The system is told when to start tracking a particular entity, and when to stop. And at any point the system can be asked how many entities are in-progress (or in-flight). The system is expected to give this count, as fast as possible
+Problem Statement
+You need to design a system that is able to track pending entities.
+An entity is identified using a unique ID and a list of hierarchical tags.
+There are 3 parts to this problem statement. startTracking, endTracking and getCounts.
+When an entity is being tracked, you will be provided with an identifier for the entity, and a hierarchical tags associated with the entity to be tracked.
+When counts are being retrieved, you will be provided with a partial list of tags, for which the accumulated counts need to be returned. This partial list of tags will follow the same hierarchy order as given in the input. (Should become clear with the example shown below).
+The following is a guide for the interfaces you may have in your system.
+An interface to start tracking the counts for the entity. (increment count by 1)
+void startTracking (Integer id, List<String> hierarchicalTags);
+where,
+id = Identifier of the entity
+hierarchicalTags = Tags that are properties of the entity. These tags are hierarchical in nature.
+An interface to stop tracking the entity that is already being tracked (reduce count by 1)
+void stopTracking (Integer id);
+where,
+id = Identifier of the transaction
+An interface to get counts of entity being tracked, that match the tags supplied
+Integer getCounts (List<String> tags);
+where,
+tags = a hierarchy of tags, for which counts are to be retrieved
+Sample
+The following is just a sample for your understanding.
+Please remember: You are expected to write the system which mirrors production quality code, rather than just implementing these functions
+The sample below shows the ability to track in-flight transactions happening across instruments, states and cities:
+## Examples for tracking and getting counts
 
-## All Low Level Design and Machine Coding Rounds Questions and Answers
+startTracking(1112, ["UPI", "Karnataka", "Bangalore"]); 
+startTracking(2451, ["UPI", "Karnataka", "Mysore"]); 
+startTracking(3421, ["UPI", "Rajasthan", "Jaipur"]); 
+startTracking(1221, ["Wallet", "Karnataka", "Bangalore"]); 
 
-### Snake and Ladder
-   * Problem Statement: [Problem Statement](https://workat.tech/machine-coding/practice/snake-and-ladder-problem-zgtac9lxwntg)
-   * Code : [Github Snake and Ladder](https://github.com/lavakumarThatisetti/Machine-Coding-Round/tree/master/src/com/lavakumar/snakeandladder)
-   * Video Tutorial: [Snake and Ladder](https://www.youtube.com/watch?v=na3DQv8ZAD8)
-### Split Wise
-   * Problem Statement: [Problem Statement](https://workat.tech/machine-coding/practice/splitwise-problem-0kp2yneec2q2)
-   * Code : [Github Split Wise](https://github.com/lavakumarThatisetti/Machine-Coding-Round/tree/master/src/com/lavakumar/splitwise)
-   * Old Video Tutorial: [Split Wise Old](https://www.youtube.com/watch?v=na3DQv8ZAD8) 
-   * New Video Tutorial: [Split Wise New](https://youtu.be/MuI5MPWbnbI)
-### Parking Lot
-   * Problem Statement: [Problem Statement](https://workat.tech/machine-coding/practice/design-parking-lot-qm6hwq4wkhp8)
-   * Code : [Github Parking Lot](https://github.com/lavakumarThatisetti/Machine-Coding-Round/tree/master/src/com/lavakumar/parkinglot) 
-   * Video Tutorial: [Parking Lot](https://www.youtube.com/watch?v=aQf-ovnR8go)
-### Tic-Tac-Toe
-   * Problem Statement: [Problem Statement](https://workat.tech/machine-coding/practice/design-tic-tac-toe-smyfi9x064ry)
-   * Code : In this Repository
-   * Video Tutorial: Yet To Updated
-### Token Bucket 
-   * Problem Statement: Yet To Updated 
-   * Code : [Github Token Bucket](https://github.com/lavakumarThatisetti/Machine-Coding-Round/tree/master/src/com/lavakumar/tokenbucket)
-   * Video Tutorial: Yet To Updated
-### Trello
-   * Problem Statement: [Problem Statement](https://workat.tech/machine-coding/practice/trello-problem-t0nwwqt61buz)
-   * Code : [Github Code](https://github.com/lavakumarThatisetti/Machine-Coding-Round/tree/master/src/com/lavakumar/trello)
-   * Video Tutorial: Yet To Update
-### FLIPMED
-   * Problem Statement: https://github.com/lavakumarThatisetti/FLIPMED_Interview/blob/master/ProblemStatment.md
-   * code: https://github.com/lavakumarThatisetti/FLIPMED_Interview
-   * Video:  https://www.youtube.com/watch?v=o9tOndHPxs8
-### Bowling Alley
-   * Problem Statement: https://github.com/lavakumarThatisetti/Machine-Coding-Round/tree/master/src/com/lavakumar/bowlingalley/problem-statement
-   * code : https://github.com/lavakumarThatisetti/Machine-Coding-Round/tree/master/src/com/lavakumar/bowlingalley
-   * Video: https://www.youtube.com/watch?v=ExF4ZbJkokA
-### Rate Limiter
-   * Problem Statement: Design and Develop Rate Limiter 
-   * code : https://github.com/lavakumarThatisetti/Machine-Coding-Round/tree/master/src/com/lavakumar/ratelimiter
-   * Video: https://youtu.be/82mlm8Ob3pI
+getCounts(["UPI"])   # represents the counts of all pending "UPI" transactions
+Output: 3
+getCounts(["UPI", "Karnataka"])  # represents the counts of all pending "UPI" transactions in "Karnataka"
+Output: 2
+getCounts(["UPI", "Karnataka", "Bangalore"]) # represents the counts of all pending "UPI" transactions in "Karnataka" and "Bangalore"
+Output: 1
 
-_Will Come More..._ 
+getCounts(["Bangalore"]) # Does not represent a valid hierarchy in the sample
+Output: 0
+
+startTracking(4221, ["Wallet", "Karnataka", "Bangalore"]); 
+stopTracking(1112); 
+stopTracking(2451); 
+
+getCounts(["UPI"])
+Output: 1
+getCounts(["Wallet"])
+Output: 2
+getCounts(["UPI", "Karnataka", "Bangalore"])
+Output: 0
+
+Requirements P0
+Implement the above with appropriate assumptions for the example shown above.
+Optimize your solution for time/space complexity taking reasonable tradeoffs.
+You can limit your implementation, specifically for transactions (as shown in the example: startTracking(transactionID, [instrument, state, city]);
+You can choose to assume that the hierarchical tags are of fixed size of 3 and are instrument, state, city.
+You can simulate the operations of tracking and getting counts as shown in the sample, using a main function or test cases
+You should have a working code that demonstrates the same.
+Handle error scenarios appropriately
+Requirements P1
+Make your library/interfaces generic enough to be used for tracking any entities with any number of hierarchical tags. Not just transactions with 3 tags.
+Eg: Track pending restaurant orders, and fetch counts of pending orders per location, or counts of pending orders per location and specific restaurant and specific cuisine
+startTracking(orderId, [location, restaurant, cuisine, title]) 
+Things to keep in mind
+You are only allowed to use in-memory data structures
+You are NOT allowed to use any databases
+You are NOT required to have a full-fledged web service or APIs exposed
+A working code is ABSOLUTELY NECESSARY. Evaluation will not be done if your code is not running. So ensure you time yourselves accordingly
+You are required to showcase the working of the above concept
+Just a main class that simulates the above operations is enough
+Should you have any doubts, you are allowed to make appropriate assumptions, as long as you can explain them during the evaluation.
+You are allowed to code on your favourite IDEs as long as you paste the code back into the tool within the allotted time frame
+How you will be evaluated
+You are expected to write production quality code while implementing the requirements.
+We look for the following:
+Separation of concerns
+Abstractions
+Application of OO design principles
+Testability
+Code readability
+Language proficiency
+[execution time limit] 14 seconds (py3)
+
+Map<String, count>
+
+UPI,karnataka,bangalore → upi, upi_ka, upi_kar_bang
+
+Node {
+String tag,
+Int count,
+HashSet<Nodes> childs
+}
+
+Head = null
+Head -> childs contains(upi) → or else create new child and insert into the child.
+ 
+
+
+
+List<request body> 1111, UPI, karnataka, bangalore
